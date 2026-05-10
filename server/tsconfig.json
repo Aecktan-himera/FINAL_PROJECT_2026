@@ -1,0 +1,38 @@
+{
+  "extends": "@tsconfig/node24/tsconfig",
+  "compilerOptions": {
+    // Основные пути сборки
+    "rootDir": "./src",
+    "outDir": "./dist",
+
+    // Среда выполнения — CommonJS для совместимости с Fastify/Prisma
+    "module": "commonjs",
+    "moduleResolution": "node10",       // или "node" (аналог)
+    "target": "ES2024",                 // Node.js 24 полностью это поддерживает
+    "lib": ["ES2024"],
+    "types": ["node"],                  // глобальные типы Node.js
+
+    // Удобство отладки и переиспользования
+    "sourceMap": true,
+    "declaration": true,
+    "declarationMap": true,
+
+    // Строгая типизация (уже включено в базовом конфиге, но можно оставить для ясности)
+    "strict": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "esModuleInterop": true,
+
+    // Дополнительные полезные флаги
+    "isolatedModules": true,                  // совместимость с esbuild (часто используется в тестах/инструментах)
+    "moduleDetection": "force",               // каждый файл — модуль
+    "noUncheckedSideEffectImports": true,     // защита от неиспользуемых импортов с побочными эффектами
+    // Оставшиеся можно включить позже
+    // "noImplicitReturns": true,
+    // "noUnusedLocals": true,
+    // "noUnusedParameters": true
+  "ignoreDeprecations": "6.0"
+  },
+  "include": ["src/**/*.ts"],
+  "exclude": ["node_modules", "dist"]
+}
