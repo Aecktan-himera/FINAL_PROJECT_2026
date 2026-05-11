@@ -25,7 +25,7 @@ export default function Login() {
 }
 
 /*
-<form onSubmit={handleSubmit(onSubmit)} className="...">
+..,,,,,mmmm,mmmm<form onSubmit={handleSubmit(onSubmit)} className="...">
       <input {...register('email')} placeholder="Email" />
       <input type="password" {...register('password')} placeholder="Пароль" />
       <button type="submit">Войти</button>

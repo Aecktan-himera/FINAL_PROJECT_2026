@@ -1,0 +1,55 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+
+enum SystemRole {
+  new_user
+  verified_user
+  team_lead
+  admin
+}
+
+model User {
+  id            String    @id @default(uuid()) @db.Uuid
+  username      String    @unique @db.VarChar(50)
+  email         String    @unique @db.VarChar(255)
+  passwordHash  String    @map("password_hash") @db.VarChar(255)
+  firstName     String?   @map("firstname") @db.VarChar(100)
+  surname       String?   @db.VarChar(100)
+  role          SystemRole @default(new_user)
+  avatarUrl     String?   @map("avatar_url") @db.Text
+  location      String?   @db.VarChar(255)
+  bio           String?   @db.Text
+  skills        Json?     @db.JsonB
+  settings      Json?     @db.JsonB
+  isActive      Boolean   @default(true) @map("is_active")
+  createdAt     DateTime  @default(now()) @map("created_at") @db.Timestamptz()
+
+  tokens        Token[]
+  // далее связи
+
+  @@map("users")
+}
+
+model Token {
+  id          String    @id @default(uuid()) @db.Uuid
+  token       String    @db.Text
+  jti         String    @db.VarChar(255)
+  expiresAt   DateTime  @map("expires_at") @db.Timestamptz()
+  blacklisted Boolean   @default(false)
+  userId      String    @map("user_id") @db.Uuid
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("tokens")
+}
