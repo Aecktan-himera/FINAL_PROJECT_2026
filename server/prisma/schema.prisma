@@ -37,8 +37,7 @@ model User {
   createdAt     DateTime  @default(now()) @map("created_at") @db.Timestamptz()
 
   tokens        Token[]
-  // далее связи
-
+  
   @@map("users")
 }
 
@@ -53,3 +52,22 @@ model Token {
 
   @@map("tokens")
 }
+
+/*
+model Attachment {
+  id           String   @id @default(uuid()) @db.Uuid          // PK → NOT NULL + UNIQUE
+  bucket       String   @db.VarChar(100)                       // NOT NULL
+  objectKey    String   @map("object_key") @db.VarChar(500)    // NOT NULL
+  originalName String?  @map("original_name") @db.VarChar(255) // может быть NULL
+  mimeType     String?  @map("mime_type") @db.VarChar(100)     // может быть NULL
+  sizeBytes    Int      @map("size_bytes")                     // NOT NULL
+  uploadedBy   String   @map("uploaded_by") @db.Uuid           // FK NOT NULL
+  taskId       String?  @map("task_id") @db.Uuid               // FK опционально (NULL)
+  createdAt    DateTime @default(now()) @map("created_at") @db.Timestamptz() // NOT NULL
+
+  user User   @relation(fields: [uploadedBy], references: [id])
+  task Task?  @relation(fields: [taskId], references: [id])
+
+  @@map("attachments")
+}
+*/
