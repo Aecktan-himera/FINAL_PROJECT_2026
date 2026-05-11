@@ -6,18 +6,22 @@ import websocket from '@fastify/websocket';
 import swagger from '@fastify/swagger';
 import swaggerUi from '@fastify/swagger-ui';
 import { serializerCompiler, validatorCompiler } from 'fastify-type-provider-zod';
+import authRoutes from './routes/auth/index';
+import authPlugin from './plugins/auth';
 
 const app = Fastify({ logger: true });
 
 app.setValidatorCompiler(validatorCompiler);
 app.setSerializerCompiler(serializerCompiler);
 
-// plugins
+
 app.register(cors, { origin: true, credentials: true });
 app.register(cookie);
 app.register(jwt, { secret: process.env.JWT_SECRET || 'dev-secret-change-me' });
 app.register(websocket);
-app.register(swagger, { /* swagger options */ });
+app.register(swagger, { openapi: { info: { title: 'Task Tracker API', version: '1.0.0' }}});
 app.register(swaggerUi, { routePrefix: '/docs' });
+app.register(authRoutes, { prefix: '/auth' });
+app.register(authPlugin);
 
 export default app;
