@@ -1,8 +1,8 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-//import ReactDOM from 'react-dom/client';
 import { BrowserRouter, Routes, Route} from 'react-router-dom';
 //import { useAuthStore } from './store/authStore';
 import Login from './pages/LoginPage';
+import RegisterPage from './pages/RegisterPage'
 
 /*function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const user = useAuthStore((s) => s.user);
@@ -17,8 +17,8 @@ function App() {
       <BrowserRouter>
         <Routes>
           <Route path="/login" element={<Login />} />
-          {/*<Route path="/register" element={<Register />} />
-          <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
+          <Route path="/register" element={<RegisterPage />} />
+          {/*<Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
           <Route path="/projects" element={<ProtectedRoute><ProjectsDashboard /></ProtectedRoute>} />
           {/* остальные */}
         </Routes>

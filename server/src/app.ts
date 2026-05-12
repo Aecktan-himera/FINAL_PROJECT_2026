@@ -15,7 +15,7 @@ app.setValidatorCompiler(validatorCompiler);
 app.setSerializerCompiler(serializerCompiler);
 
 
-app.register(cors, { origin: true, credentials: true });
+app.register(cors, { origin: 'http://localhost:5173', credentials: true });
 app.register(cookie);
 app.register(jwt, { secret: process.env.JWT_SECRET || 'dev-secret-change-me' });
 app.register(websocket);

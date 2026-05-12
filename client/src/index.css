@@ -111,3 +111,6 @@ code {
   background: var(--code-bg);
 }
 */
+div {
+  color:red;
+}
