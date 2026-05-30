@@ -8,4 +8,5 @@ export default async function authRoutes(app: FastifyInstance) {
   app.register(registerRoute);
   app.register(loginRoute);
   app.register(refreshRoute);
+  
 }

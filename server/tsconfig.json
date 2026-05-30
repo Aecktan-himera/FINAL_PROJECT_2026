@@ -33,6 +33,6 @@
     // "noUnusedParameters": true
   "ignoreDeprecations": "6.0"
   },
-  "include": ["src/**/*.ts"],
+  "include": ["src/**/*.ts"], // , "../client/src/services/project.service.ts"
   "exclude": ["node_modules", "dist", "prisma.config.ts"]
 }

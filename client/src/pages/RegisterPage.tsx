@@ -3,9 +3,9 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuthStore } from '../store/authStore';
-import {registerSchema} from '../schemas/register.schema';
-import type {RegisterInput} from '../schemas/register.schema'
-
+import { registerSchema } from '../schemas/register.schema';
+import type { RegisterInput } from '../schemas/register.schema';
+import { LiquidGlass } from '../components/ui/LiquidGlass';
 
 function getErrorMessage(error: unknown): string {
   if (error && typeof error === 'object' && 'response' in error) {
@@ -19,7 +19,7 @@ function getErrorMessage(error: unknown): string {
 }
 
 export default function RegisterPage() {
-  const { register: registerUser } = useAuthStore(); // переименуем, чтобы не путать с hook
+  const { register: registerUser } = useAuthStore();
   const navigate = useNavigate();
   const [serverError, setServerError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -36,14 +36,10 @@ export default function RegisterPage() {
     setServerError(null);
     setIsLoading(true);
     try {
-      // registerUser вызывает POST /auth/register (Zustand action)
       await registerUser(data);
-      // Перенаправляем на страницу входа с сообщением об успехе (можно через toast)
       navigate('/login', { state: { message: 'Регистрация успешна. Ожидайте активации.' } });
     } catch (error: unknown) {
-      // Обрабатываем ошибки сервера
-      const message =
-        getErrorMessage(error);
+      const message = getErrorMessage(error);
       setServerError(message);
     } finally {
       setIsLoading(false);
@@ -51,11 +47,18 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="w-full max-w-md space-y-8 rounded-lg bg-white p-6 shadow-md">
+    <div className="min-h-screen relative flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+      <div
+        className="fixed inset-0 -z-10 animate-gradient"
+        style={{
+          background: 'linear-gradient(45deg, #ff6b6b, #4ecdc4, #45b7d1, #f9ca24)',
+          backgroundSize: '400% 400%',
+        }}
+      />
+      <LiquidGlass as="div" className="w-full max-w-md space-y-8 p-6">
         <div className="text-center">
-          <h2 className="text-3xl font-bold text-gray-900">Создать аккаунт</h2>
-          <p className="mt-2 text-sm text-gray-600">
+          <h2 className="text-3xl font-bold text-blue-900">Создать аккаунт</h2>
+          <p className="mt-2 text-sm text-gray-700">
             Уже есть аккаунт?{' '}
             <Link to="/login" className="font-medium text-blue-600 hover:underline">
               Войти
@@ -64,15 +67,14 @@ export default function RegisterPage() {
         </div>
 
         {serverError && (
-          <div className="rounded-md bg-red-50 p-4 text-sm text-red-700">
+          <div className="rounded-md bg-red-100/80 p-4 text-sm text-red-800 backdrop-blur-sm">
             {serverError}
           </div>
         )}
 
         <form className="space-y-4" onSubmit={handleSubmit(onSubmit)}>
-          {/* Имя пользователя */}
           <div>
-            <label htmlFor="username" className="block text-sm font-medium text-gray-700">
+            <label htmlFor="username" className="block text-sm font-medium text-gray-800">
               Имя пользователя
             </label>
             <input
@@ -80,16 +82,15 @@ export default function RegisterPage() {
               id="username"
               type="text"
               autoComplete="username"
-              className="mt-1 block w-full rounded border border-gray-300 px-3 py-2 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+              className="mt-1 block w-full rounded border border-white/30 bg-white/50 px-3 py-2 text-gray-800 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
             />
             {errors.username && (
               <p className="mt-1 text-xs text-red-600">{errors.username.message}</p>
             )}
           </div>
 
-          {/* Email */}
           <div>
-            <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+            <label htmlFor="email" className="block text-sm font-medium text-gray-800">
               Email
             </label>
             <input
@@ -97,16 +98,15 @@ export default function RegisterPage() {
               id="email"
               type="email"
               autoComplete="email"
-              className="mt-1 block w-full rounded border border-gray-300 px-3 py-2 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+              className="mt-1 block w-full rounded border border-white/30 bg-white/50 px-3 py-2 text-gray-800 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
             />
             {errors.email && (
               <p className="mt-1 text-xs text-red-600">{errors.email.message}</p>
             )}
           </div>
 
-          {/* Пароль */}
           <div>
-            <label htmlFor="password" className="block text-sm font-medium text-gray-700">
+            <label htmlFor="password" className="block text-sm font-medium text-gray-800">
               Пароль
             </label>
             <input
@@ -114,36 +114,34 @@ export default function RegisterPage() {
               id="password"
               type="password"
               autoComplete="new-password"
-              className="mt-1 block w-full rounded border border-gray-300 px-3 py-2 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+              className="mt-1 block w-full rounded border border-white/30 bg-white/50 px-3 py-2 text-gray-800 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
             />
             {errors.password && (
               <p className="mt-1 text-xs text-red-600">{errors.password.message}</p>
             )}
           </div>
 
-          {/* Имя (необязательно) */}
           <div>
-            <label htmlFor="firstName" className="block text-sm font-medium text-gray-700">
+            <label htmlFor="firstName" className="block text-sm font-medium text-gray-800">
               Имя (необязательно)
             </label>
             <input
               {...register('firstName')}
               id="firstName"
               type="text"
-              className="mt-1 block w-full rounded border border-gray-300 px-3 py-2 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+              className="mt-1 block w-full rounded border border-white/30 bg-white/50 px-3 py-2 text-gray-800 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
             />
           </div>
 
-          {/* Фамилия (необязательно) */}
           <div>
-            <label htmlFor="surname" className="block text-sm font-medium text-gray-700">
+            <label htmlFor="surname" className="block text-sm font-medium text-gray-800">
               Фамилия (необязательно)
             </label>
             <input
               {...register('surname')}
               id="surname"
               type="text"
-              className="mt-1 block w-full rounded border border-gray-300 px-3 py-2 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+              className="mt-1 block w-full rounded border border-white/30 bg-white/50 px-3 py-2 text-gray-800 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
             />
           </div>
 
@@ -155,7 +153,7 @@ export default function RegisterPage() {
             {isLoading ? 'Регистрация...' : 'Зарегистрироваться'}
           </button>
         </form>
-      </div>
+      </LiquidGlass>
     </div>
   );
 }

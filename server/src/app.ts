@@ -8,6 +8,8 @@ import swaggerUi from '@fastify/swagger-ui';
 import { serializerCompiler, validatorCompiler } from 'fastify-type-provider-zod';
 import authRoutes from './routes/auth/index';
 import authPlugin from './plugins/auth';
+import userTabsRoutes from './routes/user/tabs';
+import projectsRoutes from './routes/projects';
 
 const app = Fastify({ logger: true });
 
@@ -23,5 +25,7 @@ app.register(swagger, { openapi: { info: { title: 'Task Tracker API', version: '
 app.register(swaggerUi, { routePrefix: '/docs' });
 app.register(authRoutes, { prefix: '/auth' });
 app.register(authPlugin);
+app.register(userTabsRoutes, { prefix: '/user' });
+app.register(projectsRoutes, { prefix: '/projects' });
 
 export default app;
