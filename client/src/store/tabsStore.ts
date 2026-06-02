@@ -1,17 +1,18 @@
-import { create } from 'zustand';
-import api from '../services/api';
+import { create } from "zustand";
+import api from "../services/api";
+import { useAuthStore } from "./authStore";
 
 export type TabType =
-  | 'projects-list'
-  | 'project-detail'
-  | 'users-list'
-  | 'teams-list'
-  | 'calendar'
-  | 'project-form'
-  | 'contacts'
-  | 'project-form';
-  
-export type TabData = 
+  | "projects-list"
+  | "project-detail"
+  | "users-list"
+  | "teams-list"
+  | "calendar"
+  | "project-form"
+  | "contacts"
+  | "project-form";
+
+export type TabData =
   | { projectId: string }
   | { userId?: string }
   | Record<string, unknown>;
@@ -27,7 +28,7 @@ interface TabsState {
   tabs: Tab[];
   activeTabId: string | null;
   isLoading: boolean;
-  addTab: (tab: Omit<Tab, 'id'>) => void;
+  addTab: (tab: Omit<Tab, "id">) => void;
   closeTab: (tabId: string) => void;
   setActiveTab: (tabId: string) => void;
   loadFromServer: () => Promise<void>;
@@ -38,7 +39,7 @@ interface TabsState {
 // Исправленный debounce с корректной типизацией
 function debounce<F extends (...args: Parameters<F>) => ReturnType<F>>(
   fn: F,
-  delay: number
+  delay: number,
 ): (...args: Parameters<F>) => void {
   let timer: ReturnType<typeof setTimeout> | undefined;
   return (...args: Parameters<F>) => {
@@ -47,9 +48,9 @@ function debounce<F extends (...args: Parameters<F>) => ReturnType<F>>(
   };
 }
 
-const createDefaultTab = (): Omit<Tab, 'id'> => ({
-  title: 'Список проектов',
-  type: 'projects-list',
+const createDefaultTab = (): Omit<Tab, "id"> => ({
+  title: "Список проектов",
+  type: "projects-list",
 });
 
 const getDefaultState = () => {
@@ -100,14 +101,22 @@ export const useTabsStore = create<TabsState>((set, get) => ({
   },
 
   loadFromServer: async () => {
-    const token = localStorage.getItem('accessToken');
+    const token = localStorage.getItem("accessToken");
     if (!token) {
       get().resetToDefault();
       return;
     }
 
+    //  Защита для new_user
+    const user = useAuthStore.getState().user;
+    if (user?.role === "new_user") {
+      get().resetToDefault();
+      set({ isLoading: false });
+      return;
+    }
+
     try {
-      const { data } = await api.get('/user/tabs');
+      const { data } = await api.get("/user/tabs");
       const { tabs, activeId } = data;
       if (tabs && Array.isArray(tabs) && tabs.length > 0) {
         set({ tabs, activeTabId: activeId, isLoading: false });
@@ -115,29 +124,30 @@ export const useTabsStore = create<TabsState>((set, get) => ({
         get().resetToDefault();
       }
     } catch (error) {
-      console.error('Failed to load tabs', error);
+      console.error("Failed to load tabs", error);
       get().resetToDefault();
     }
   },
 
   saveToServer: async (tabs, activeId) => {
-    const token = localStorage.getItem('accessToken');
+    const token = localStorage.getItem("accessToken");
     if (!token) return;
 
+     //  Защита для new_user
+    const user = useAuthStore.getState().user;
+    if (user?.role === 'new_user') return;
+
     try {
-      await api.post('/user/tabs', { tabs, activeId });
+      await api.post("/user/tabs", { tabs, activeId });
     } catch (error) {
-      console.debug('Failed to save tabs (non-critical)', error);
+      console.debug("Failed to save tabs (non-critical)", error);
     }
   },
 }));
 
-const debouncedSave = debounce(
-  (tabs: Tab[], activeId: string | null) => {
-    useTabsStore.getState().saveToServer(tabs, activeId);
-  },
-  1000
-);
+const debouncedSave = debounce((tabs: Tab[], activeId: string | null) => {
+  useTabsStore.getState().saveToServer(tabs, activeId);
+}, 1000);
 
 useTabsStore.subscribe((state) => {
   if (!state.isLoading) {

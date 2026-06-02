@@ -19,20 +19,29 @@ const refreshRoute: FastifyPluginAsyncZod = async (app) => {
   });
   if (!storedToken || storedToken.expiresAt < new Date()) return reply.status(401).send();
 
-  // отзываем старый
-  await prisma.token.update({ where: { id: storedToken.id }, data: { blacklisted: true } });
+   // Проверка, активен ли пользователь (добавлено)
+    const user = await prisma.user.findUnique({ where: { id: payload.sub } });
+    if (!user || !user.isActive) {
+      return reply.status(401).send({ message: 'Account disabled' });
+    }
 
-  // выдаём новые
-  const user = await prisma.user.findUnique({ where: { id: payload.sub } });
-  const tokens = await createTokens(user!.id, user!.role);
-  reply.setCookie('refreshToken', tokens.refreshToken, { httpOnly: true,
+    // отзываем старый токен
+    await prisma.token.update({
+      where: { id: storedToken.id },
+      data: { blacklisted: true },
+    });
+
+    // выдаём новые токены
+    const tokens = await createTokens(user.id, user.role);
+    reply.setCookie('refreshToken', tokens.refreshToken, {
+      httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'lax',
       path: '/',
       maxAge: 7 * 24 * 60 * 60,
     });
-  return { accessToken: tokens.accessToken };
-});
-}
+    return { accessToken: tokens.accessToken };
+  });
+};
 
 export default refreshRoute;

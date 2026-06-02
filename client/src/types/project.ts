@@ -1,12 +1,16 @@
 export interface ProjectMember {
+   projectId: string;
+  userId: string;
+  projectRole: 'owner' | 'team_lead' | 'developer' | 'viewer';
+  joinedAt: string;
   user: {
     id: string;
     username: string;
     email: string;
-    avatarUrl?: string;
+    avatarUrl: string | null;
+    firstName: string | null;
+    surname: string | null;
   };
-  projectRole: 'owner' | 'team_lead' | 'developer' | 'viewer';
-  joinedAt: string;
 }
 
 export interface Project {

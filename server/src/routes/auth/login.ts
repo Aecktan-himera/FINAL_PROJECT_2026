@@ -26,16 +26,20 @@ const loginRoute: FastifyPluginAsyncZod = async (app) => {
     });
     return {
       accessToken: tokens.accessToken,
-      user: { id: user.id, role: user.role, username: user.username },
+      user: {
+    id: user.id,
+    email: user.email,
+    username: user.username,
+    role: user.role,
+    isActive: user.isActive,
+    firstName: user.firstName,
+    surname: user.surname,
+    avatarUrl: user.avatarUrl,
+    createdAt: user.createdAt,
+  },
     };
   });
-  app.get('/me', { preValidation: app.authenticate }, async (req, reply) => {
-  const user = await prisma.user.findUnique({
-    where: { id: req.user!.sub },
-    select: { id: true, username: true, email: true, role: true, isActive: true, avatarUrl: true, firstName: true, surname: true, location: true, bio: true, settings: true, createdAt: true },
-  });
-  reply.send(user);
-});
+  
 };
 
 export default loginRoute;

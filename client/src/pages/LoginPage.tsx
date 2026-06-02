@@ -25,9 +25,6 @@ const getErrorMessage = (error: unknown): string => {
   return "Ошибка входа";
 };
 
-
-
-
 export default function Login() {
   const { login } = useAuthStore();
   const navigate = useNavigate();
@@ -44,7 +41,12 @@ export default function Login() {
     setError(null);
     try {
       await login(data.email, data.password);
-      navigate("/user/tabs");
+      const user = useAuthStore.getState().user;
+      if (user?.role === "new_user") {
+        navigate("/waiting-verification");
+      } else {
+        navigate("/user/tabs");
+      }
     } catch (err: unknown) {
       const message = getErrorMessage(err);
       setError(message);

@@ -15,6 +15,18 @@ const saveTabsBodySchema = z.object({
 });
 
 const userTabsRoutes: FastifyPluginAsyncZod = async (app) => {
+  // Аутентификация для всех маршрутов
+  app.addHook('preHandler', app.authenticate);
+
+  // Запрет для new_user
+  app.addHook('preHandler', async (req, reply) => {
+    if (req.user!.role === 'new_user') {
+      return reply.status(403).send({ 
+        message: 'Access denied. Your account is pending activation.' 
+      });
+    }
+  });
+
   // Получение состояния вкладок
   app.get('/tabs', { preHandler: [app.authenticate] }, async (req, reply) => {
     const userId = req.user.sub;

@@ -1,17 +1,15 @@
 import { useTabsStore } from "../../store/tabsStore";
 import { LiquidGlass } from "../../components/ui/LiquidGlass";
-import { XMarkIcon, PlusIcon } from "@heroicons/react/24/outline";
-import {
-  useProjects,
-  useProject,
-  useDeleteProject,
-} from "../../hooks/useProjects";
+import { XMarkIcon } from "@heroicons/react/24/outline";
+import { useProject } from "../../hooks/useProjects";
 import { ProjectFormModal } from "../modal/ProjectFormModal";
 import { useState } from "react";
+import { ProjectsList } from "../tabs/ProjectsList";
+import { ProjectDetail } from "../tabs/ProjectDetail";
+//import { UsersList } from "../tabs/UsersList";
 
-
-// Компонент списка проектов 
-const ProjectsList = () => {
+// Компонент списка проектов
+/*const ProjectsList = () => {
   const { data: projects, isLoading } = useProjects();
   const deleteProject = useDeleteProject();
   const addTab = useTabsStore((s) => s.addTab);
@@ -77,10 +75,10 @@ const ProjectsList = () => {
       />
     </div>
   );
-};
+};*/
 
 // Компонент деталей проекта
-const ProjectDetail = ({ projectId }: { projectId: string }) => {
+/*const ProjectDetail = ({ projectId }: { projectId: string }) => {
   const { data: project, isLoading } = useProject(projectId);
   const deleteProject = useDeleteProject();
   const [isEditing, setIsEditing] = useState(false);
@@ -145,34 +143,34 @@ const ProjectDetail = ({ projectId }: { projectId: string }) => {
       />
     </div>
   );
-};
+};*/
 
 // Заглушки для остальных типов
-const UsersList = () => (
+/*const UsersList = () => (
   <div className="p-4 text-white">
     <h3 className="text-xl font-semibold mb-4">Список пользователей</h3>
     <p className="text-white/70">Здесь будет список пользователей (API в разработке)</p>
   </div>
-);
+);*/
 
 const TeamsList = () => (
-  <div className="p-4 text-white">
+  <div className="p-4 text-white min-h-[60vh]">
     <h3 className="text-xl font-semibold mb-4">Мои команды</h3>
     <p className="text-white/70">Здесь будут команды (API в разработке)</p>
   </div>
 );
 
 const CalendarPlaceholder = () => (
-  <div className="p-4 text-white">
+  <div className="p-4 text-white min-h-[60vh]">
     <h3 className="text-xl font-semibold mb-4">Календарь</h3>
     <p className="text-white/70">Интеграция календаря (в разработке)</p>
   </div>
 );
 
-const ContactsPlaceholder = () => (
-  <div className="p-4 text-white">
-    <h3 className="text-xl font-semibold mb-4">Контакты</h3>
-    <p className="text-white/70">Справочник контактов (в разработке)</p>
+const ZoomPlaceholder = () => (
+  <div className="p-4 text-white min-h-[60vh]">
+    <h3 className="text-xl font-semibold mb-4">Совещания в Zoom</h3>
+    <p className="text-white/70">Запланированные совещания (в разработке)</p>
   </div>
 );
 
@@ -212,7 +210,7 @@ export const TabsContainer = () => {
     const activeTab = tabs.find((t) => t.id === activeTabId);
     if (!activeTab) {
       return (
-        <div className="p-8 text-center text-white/70 text-lg">
+        <div className="p-8 text-center text-white/70 text-lg min-h-[65vh]">
           🚀 Выберите пункт меню, чтобы открыть вкладку
         </div>
       );
@@ -222,7 +220,6 @@ export const TabsContainer = () => {
       case "projects-list":
         return <ProjectsList />;
       case "project-detail":
-        // Уточняем тип data
         return (
           <ProjectDetail
             projectId={(activeTab.data as { projectId: string }).projectId}
@@ -234,14 +231,13 @@ export const TabsContainer = () => {
           projectId?: string;
         };
         return <ProjectFormTab mode={data.mode} projectId={data.projectId} />; }
-      case "users-list":
-        return <UsersList />;
+      // Удаляем case "users-list"
       case "teams-list":
         return <TeamsList />;
       case "calendar":
         return <CalendarPlaceholder />;
       case "contacts":
-        return <ContactsPlaceholder />;
+        return <ZoomPlaceholder />;
       default:
         return <div className="text-white">Неизвестный тип вкладки</div>;
     }

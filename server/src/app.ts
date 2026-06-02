@@ -10,6 +10,8 @@ import authRoutes from './routes/auth/index';
 import authPlugin from './plugins/auth';
 import userTabsRoutes from './routes/user/tabs';
 import projectsRoutes from './routes/projects';
+import profileRoutes from './routes/user/profile';
+import adminUsersRoutes from './routes/admin/users';
 
 const app = Fastify({ logger: true });
 
@@ -27,5 +29,7 @@ app.register(authRoutes, { prefix: '/auth' });
 app.register(authPlugin);
 app.register(userTabsRoutes, { prefix: '/user' });
 app.register(projectsRoutes, { prefix: '/projects' });
+app.register(profileRoutes, { prefix: '/user' });
+app.register(adminUsersRoutes, { prefix: '/admin' });
 
 export default app;
