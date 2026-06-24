@@ -6,7 +6,7 @@ function generateAccessToken(userId: string, role: string) {
   return jwt.sign(
     { sub: userId, role },
     process.env.JWT_SECRET || 'dev-secret-change-me',   // ← теперь используем JWT_SECRET
-    { expiresIn: '15m' }
+    { expiresIn: '1m' }
   );
 }
 

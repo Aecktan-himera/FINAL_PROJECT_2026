@@ -1,9 +1,13 @@
-import api from './api';
-import { type Project, type CreateProjectData, type UpdateProjectData } from '../types/project';
+import api from "./api";
+import {
+  type Project,
+  type CreateProjectData,
+  type UpdateProjectData,
+} from "../types/project";
 
 export const projectService = {
   async getProjects(): Promise<Project[]> {
-    const { data } = await api.get<Project[]>('/projects');
+    const { data } = await api.get<Project[]>("/projects");
     return data as Project[];
   },
 
@@ -13,7 +17,7 @@ export const projectService = {
   },
 
   async createProject(data: CreateProjectData): Promise<Project> {
-    const { data: project } = await api.post<Project>('/projects', data);
+    const { data: project } = await api.post<Project>("/projects", data);
     return project;
   },
 
@@ -25,4 +29,10 @@ export const projectService = {
   async deleteProject(id: string): Promise<void> {
     await api.delete(`/projects/${id}`);
   },
+
+  async getPublicProjects(): Promise<Project[]> {
+    const { data } = await api.get<Project[]>("/projects/public");
+    return data;
+  },
+  
 };

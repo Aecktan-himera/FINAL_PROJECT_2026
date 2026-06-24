@@ -36,7 +36,7 @@ const refreshRoute: FastifyPluginAsyncZod = async (app) => {
     reply.setCookie('refreshToken', tokens.refreshToken, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
-      sameSite: 'lax',
+      sameSite: "lax",//'lax',
       path: '/',
       maxAge: 7 * 24 * 60 * 60,
     });

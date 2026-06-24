@@ -1,6 +1,6 @@
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useQuery, useMutation, useQueryClient, QueryClient } from '@tanstack/react-query';
 import { projectService } from '../services/project.service';
-import {type Project, type CreateProjectData, type UpdateProjectData } from '../types/project';
+import { type Project, type CreateProjectData, type UpdateProjectData } from '../types/project';
 
 export const projectKeys = {
   all: ['projects'] as const,
@@ -8,6 +8,13 @@ export const projectKeys = {
   list: () => [...projectKeys.lists()] as const,
   details: () => [...projectKeys.all, 'detail'] as const,
   detail: (id: string) => [...projectKeys.details(), id] as const,
+  publicList: () => ['public-projects'] as const,
+};
+
+// Общая функция инвалидации всех списков проектов
+const invalidateProjectQueries = (queryClient: QueryClient) => {
+  queryClient.invalidateQueries({ queryKey: projectKeys.lists() });
+  queryClient.invalidateQueries({ queryKey: projectKeys.publicList() });
 };
 
 export function useProjects() {
@@ -15,8 +22,15 @@ export function useProjects() {
     queryKey: projectKeys.list(),
     queryFn: async () => {
       const projects = await projectService.getProjects();
-      return projects as Project[]; // гарантируем полный тип
+      return projects as Project[];
     },
+  });
+}
+
+export function usePublicProjects() {
+  return useQuery({
+    queryKey: projectKeys.publicList(),
+    queryFn: () => projectService.getPublicProjects(),
   });
 }
 
@@ -33,7 +47,7 @@ export function useCreateProject() {
   return useMutation({
     mutationFn: (data: CreateProjectData) => projectService.createProject(data),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: projectKeys.lists() });
+      invalidateProjectQueries(queryClient);
     },
   });
 }
@@ -44,7 +58,7 @@ export function useUpdateProject() {
     mutationFn: ({ id, data }: { id: string; data: UpdateProjectData }) =>
       projectService.updateProject(id, data),
     onSuccess: (updatedProject) => {
-      queryClient.invalidateQueries({ queryKey: projectKeys.lists() });
+      invalidateProjectQueries(queryClient);
       queryClient.invalidateQueries({ queryKey: projectKeys.detail(updatedProject.id) });
     },
   });
@@ -55,7 +69,7 @@ export function useDeleteProject() {
   return useMutation({
     mutationFn: (id: string) => projectService.deleteProject(id),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: projectKeys.lists() });
+      invalidateProjectQueries(queryClient);
     },
   });
 }

@@ -7,6 +7,9 @@ import { useState } from "react";
 import { ProjectsList } from "../tabs/ProjectsList";
 import { ProjectDetail } from "../tabs/ProjectDetail";
 //import { UsersList } from "../tabs/UsersList";
+import AdminPage from "../../pages/AdminPage";
+import KanbanBoard from "../../pages/KanbanBoard";
+
 
 // Компонент списка проектов
 /*const ProjectsList = () => {
@@ -151,14 +154,14 @@ import { ProjectDetail } from "../tabs/ProjectDetail";
     <h3 className="text-xl font-semibold mb-4">Список пользователей</h3>
     <p className="text-white/70">Здесь будет список пользователей (API в разработке)</p>
   </div>
-);*/
+);
 
 const TeamsList = () => (
   <div className="p-4 text-white min-h-[60vh]">
     <h3 className="text-xl font-semibold mb-4">Мои команды</h3>
     <p className="text-white/70">Здесь будут команды (API в разработке)</p>
   </div>
-);
+);*/
 
 const CalendarPlaceholder = () => (
   <div className="p-4 text-white min-h-[60vh]">
@@ -217,34 +220,40 @@ export const TabsContainer = () => {
     }
 
     switch (activeTab.type) {
-      case "projects-list":
-        return <ProjectsList />;
-      case "project-detail":
+    case "projects-list":
+      return <ProjectsList />;
+    case "project-detail":
         return (
           <ProjectDetail
             projectId={(activeTab.data as { projectId: string }).projectId}
           />
         );
-      case "project-form":
+    case "project-form":
         { const data = activeTab.data as {
           mode: "create" | "edit";
           projectId?: string;
         };
         return <ProjectFormTab mode={data.mode} projectId={data.projectId} />; }
-      // Удаляем case "users-list"
-      case "teams-list":
-        return <TeamsList />;
-      case "calendar":
-        return <CalendarPlaceholder />;
-      case "contacts":
-        return <ZoomPlaceholder />;
-      default:
-        return <div className="text-white">Неизвестный тип вкладки</div>;
+      
+   case "kanban-board": {
+      const data = activeTab.data as { projectId: string; boardId?: string };
+      return <KanbanBoard projectId={data.projectId} boardId={data.boardId} />;
     }
+    case "admin-users":
+      return <AdminPage />;
+    case "users-list":
+      return <AdminPage />; // или специализированный компонент
+    case "calendar":
+      return <CalendarPlaceholder />;
+    case "contacts":
+      return <ZoomPlaceholder />;
+    default:
+      return <div className="text-white">Неизвестный тип вкладки</div>;
+  }
   };
 
   return (
-    <LiquidGlass className="flex flex-col p-0 overflow-hidden shadow-2xl">
+    <LiquidGlass className="flex flex-col p-0 overflow-hidden shadow-2xl" animated={false}>
       {tabs.length > 0 && (
         <div className="flex flex-wrap gap-1.5 border-b border-white/30 px-3 pt-3 bg-black/20 backdrop-blur-sm">
           {tabs.map((tab) => (

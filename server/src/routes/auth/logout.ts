@@ -17,7 +17,7 @@ const logoutRoute: FastifyPluginAsyncZod = async (app) => {
     reply.clearCookie('refreshToken', {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
-      sameSite: 'lax',
+      sameSite: "lax",//'lax',
       path: '/',
     });
     

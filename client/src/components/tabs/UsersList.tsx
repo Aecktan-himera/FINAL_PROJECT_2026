@@ -1,4 +1,3 @@
-// components/tabs/UsersList.tsx
 import { useQuery } from '@tanstack/react-query';
 import { useAuthStore } from '../../store/authStore';
 import { useProjectMembers, useAddProjectMember, useRemoveProjectMember } from '../../hooks/useProjectMembers';

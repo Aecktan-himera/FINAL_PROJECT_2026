@@ -10,11 +10,14 @@ export type TabType =
   | "calendar"
   | "project-form"
   | "contacts"
-  | "project-form";
+  | "kanban-board"      // новый тип
+  | "admin-users";      // новый тип
+
 
 export type TabData =
   | { projectId: string }
   | { userId?: string }
+  | { projectId: string; boardId?: string }  // для kanban-board
   | Record<string, unknown>;
 
 export interface Tab {
@@ -34,6 +37,7 @@ interface TabsState {
   loadFromServer: () => Promise<void>;
   saveToServer: (tabs: Tab[], activeId: string | null) => Promise<void>;
   resetToDefault: () => void;
+  updateTabData: (tabId: string, data: TabData) => void;
 }
 
 // Исправленный debounce с корректной типизацией
@@ -95,6 +99,7 @@ export const useTabsStore = create<TabsState>((set, get) => ({
     set({ activeTabId: tabId });
   },
 
+
   resetToDefault: () => {
     const defaultState = getDefaultState();
     set({ ...defaultState, isLoading: false });
@@ -107,6 +112,8 @@ export const useTabsStore = create<TabsState>((set, get) => ({
       return;
     }
 
+
+    
     //  Защита для new_user
     const user = useAuthStore.getState().user;
     if (user?.role === "new_user") {
@@ -128,6 +135,14 @@ export const useTabsStore = create<TabsState>((set, get) => ({
       get().resetToDefault();
     }
   },
+
+updateTabData: (tabId, data) => {
+  set((state) => ({
+    tabs: state.tabs.map(tab =>
+      tab.id === tabId ? { ...tab, data: { ...tab.data, ...data } } : tab
+    ),
+  }));
+},
 
   saveToServer: async (tabs, activeId) => {
     const token = localStorage.getItem("accessToken");

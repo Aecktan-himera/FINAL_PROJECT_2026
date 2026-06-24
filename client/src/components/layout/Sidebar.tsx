@@ -64,7 +64,7 @@ const TreeItem = ({
         {hasChildren ? (
           <button
             onClick={() => toggleExpand(project.id)}
-            className="focus:outline-none cursor-pointer text-blue-900/70 hover:text-blue-900"
+            className="focus:outline-none cursor-pointer hover:opacity-80"
           >
             {isExpanded ? (
               <ChevronDownIcon className="h-4 w-4" />
@@ -77,10 +77,10 @@ const TreeItem = ({
         )}
         <button
           onClick={handleOpenProjectDetail}
-          className="flex items-center gap-2 hover:text-blue-700 transition"
+          className="flex items-center gap-2 hover:opacity-80 transition"
         >
-          <FolderIcon className="h-5 w-5 text-blue-900/70" />
-          <span className="text-blue-900">{project.name}</span>
+          <FolderIcon className="h-5 w-5" />
+          <span>{project.name}</span>
         </button>
       </div>
 
@@ -152,14 +152,14 @@ export const Sidebar = () => {
       as="aside"
       className="sticky top-[6rem] mx-4 p-4 min-w-[220px] w-auto max-h-[calc(100vh-8rem)] overflow-y-auto self-start"
     >
-      <ul className="space-y-3 text-blue-900">
+      <ul className="space-y-3">
         {/* Мои проекты */}
         <li className="flex flex-col">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <button
                 onClick={() => toggleExpand("projectsRoot")}
-                className="focus:outline-none cursor-pointer text-blue-900/70 hover:text-blue-900"
+                className="focus:outline-none cursor-pointer hover:opacity-80"
               >
                 {isProjectsExpanded ? (
                   <ChevronDownIcon className="h-5 w-5" />
@@ -169,28 +169,28 @@ export const Sidebar = () => {
               </button>
               <button
                 onClick={handleOpenProjectsList}
-                className="flex items-center gap-2 hover:text-blue-700 transition"
+                className="flex items-center gap-2 hover:opacity-80 transition"
               >
-                <FolderIcon className="h-5 w-5 text-blue-900/70" />
+                <FolderIcon className="h-5 w-5" />
                 <span className="font-medium">Мои проекты</span>
               </button>
             </div>
             <button
               onClick={handleCreateProject}
-              className="p-1 rounded-full hover:bg-white/30 transition"
+              className="p-1 rounded-full hover:opacity-80 transition"
               title="Создать проект"
             >
-              <PlusIcon className="h-4 w-4 text-blue-900/70" />
+              <PlusIcon className="h-4 w-4" />
             </button>
           </div>
 
           {isProjectsExpanded && (
             <ul className="ml-6 mt-2 space-y-2 border-l border-blue-900/10 pl-2">
               {isLoading && (
-                <li className="text-sm text-blue-900/50">Загрузка...</li>
+                <li className="text-sm">Загрузка...</li>
               )}
               {!isLoading && projectTree.length === 0 && (
-                <li className="text-sm text-blue-900/50">Нет проектов</li>
+                <li className="text-sm">Нет проектов</li>
               )}
               {projectTree.map((project) => (
                 <TreeItem
@@ -208,9 +208,9 @@ export const Sidebar = () => {
         <li>
           <button
             onClick={handleOpenTeamsList}
-            className="flex items-center gap-2 w-full hover:text-blue-700 transition"
+            className="flex items-center gap-2 w-full hover:opacity-80 transition"
           >
-            <UserGroupIcon className="h-5 w-5 text-blue-900/70" />
+            <UserGroupIcon className="h-5 w-5" />
             <span>Мои команды</span>
           </button>
         </li>
@@ -219,9 +219,9 @@ export const Sidebar = () => {
         <li>
           <button
             onClick={handleOpenUsersList}
-            className="flex items-center gap-2 w-full hover:text-blue-700 transition"
+            className="flex items-center gap-2 w-full hover:opacity-80 transition"
           >
-            <UsersIcon className="h-5 w-5 text-blue-900/70" />
+            <UsersIcon className="h-5 w-5" />
             <span>Пользователи</span>
           </button>
         </li>
